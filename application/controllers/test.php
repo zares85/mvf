@@ -12,7 +12,6 @@ class Test extends CI_Controller {
 
     /**
      * Update the mvf.exchange_rates
-     * TODO: This probably shouldn't be run from lead_platform?
      *
      */
     public function update_exchange_rates() {
