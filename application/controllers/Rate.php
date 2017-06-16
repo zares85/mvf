@@ -3,7 +3,7 @@
 /**
  * Test controller
  */
-class Test extends CI_Controller {
+class Rate extends CI_Controller {
 
 
     /**
@@ -21,7 +21,7 @@ class Test extends CI_Controller {
     public function index()
     {
         $this->output->set_output(json_encode([
-            'test' => 'index'
+            'Rate' => 'index'
         ]));
     }
 
