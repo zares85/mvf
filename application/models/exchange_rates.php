@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Exchange Rate Service
+ * Exchange Rate Model
  * 
  * Interacts with the exchange rate tables
  *
  */
-class Exchange_rate_service extends CI_Model {
+class Exchange_rates extends CI_Model {
 
     private $table;
     public $exchange_rates = array();
@@ -14,16 +14,8 @@ class Exchange_rate_service extends CI_Model {
     public function __construct() {
         parent::__construct();
 
-        $this->table = 'exchange_rates';
+        $this->table = strtolower(__CLASS__);
         $this->db = $this->load->database('default', TRUE);
-
-        // Populate the exchange_rates array from db
-        $query = $this->db->select('currency, rate, updated')->where('currency <>', 'AUD')->get($this->table);
-        if ($query->num_rows > 0) {
-            foreach ($query->result() as $row) {
-                $this->exchange_rates[$row->currency] = $row->rate;
-            }
-        }
     }
 
     /**
@@ -33,9 +25,8 @@ class Exchange_rate_service extends CI_Model {
      * @return boolean
      **/
     public function update_rates($rates) {
-        $this->db = $this->load->database('default', TRUE);
-
         $update_successful = FALSE;
+
         foreach ($rates as $currency => $rate) {
             if (strlen(trim($currency)) == 3 && $rate > 0) {
                 $this->db->where('currency', $currency);
@@ -54,11 +45,18 @@ class Exchange_rate_service extends CI_Model {
      *
      **/
     public function get_rate($from_currency, $to_currency) {
-        $from_currency = strtoupper($from_currency);
-        $to_currency = strtoupper($to_currency);
+        $from = $this->db
+            ->select('rate')
+            ->where('currency', strtoupper($from_currency))
+            ->get($this->table)
+            ->row()->rate;
 
-        if (floatval($this->exchange_rates[$from_currency]) == 0) return 0;
+        $to = $this->db
+            ->select('rate')
+            ->where('currency', strtoupper($to_currency))
+            ->get($this->table)
+            ->row()->rate;
 
-        return ($this->exchange_rates[$to_currency] / $this->exchange_rates[$from_currency]);
+        return floatval($from) == 0 ? 0 : $to / $from;
     }
 }
