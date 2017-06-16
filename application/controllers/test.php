@@ -6,8 +6,10 @@ class Test extends CI_Controller {
 
     public function index()
     {
-        Header("Content-type: application:json");
-        echo json_encode(array('test' => 'index'));
+        $this->output->set_content_type('application/json');
+        $this->output->set_output(json_encode([
+            'test' => 'index'
+        ]));
     }
 
     /**
@@ -15,15 +17,28 @@ class Test extends CI_Controller {
      *
      */
     public function update_exchange_rates() {
+        $this->config->load('exchange_rate', true);
         $this->load->model('services/exchange_rate_service');
-        $exchange_rate_service = new exchange_rate_service();
+        $this->load->library('exchange_rate_provider', [
+            'app_id' => $this->config->item('app_id', 'exchange_rate')
+        ]);
 
-        Header("Content-type: application:json");
-        $result = $exchange_rate_service->update_rates();
-        echo json_encode(array(
-            'status' => $result ? "OK" : "FAILED",
-        ));
-        echo PHP_EOL;
+        $exchange_rate_service = new exchange_rate_service();
+        $rates = $this->exchange_rate_provider->get_rates();
+        $result = $exchange_rate_service->update_rates($rates);
+
+        if (!$result) {
+            $this->load->model('services/email_service');
+            $email_service = new email_service();
+            $msg = 'Exchange rates update unsuccessful from openexchangerates.org.';
+            $subject = 'Exchange rates update unsuccessful';
+            $email_service->send_error($msg, $subject, 'CRITICAL_ERROR');
+        }
+
+        $this->output->set_content_type('application/json');
+        $this->output->set_output(json_encode([
+            'status' => $result ? "OK" : "FAILED"
+        ]));
     }
 
     public function convert_currency($amount, $from_currency, $to_currency = 'GBP')
@@ -31,16 +46,16 @@ class Test extends CI_Controller {
         $this->load->model('services/exchange_rate_service');
         $exchange_rate_service = new exchange_rate_service();
 
-        Header("Content-type: application:json");
         $rate = $exchange_rate_service->get_rate($from_currency, $to_currency);
-        echo json_encode(array(
-            'from_currency' => $from_currency,
-            'to_currency' => $to_currency,
-            'exchange_rate' => $rate,
-            'original_amount' => $amount,
+
+        $this->output->set_content_type('application/json');
+        $this->output->set_output(json_encode([
+            'from_currency'    => $from_currency,
+            'to_currency'      => $to_currency,
+            'exchange_rate'    => $rate,
+            'original_amount'  => $amount,
             'converted_amount' => $amount * $rate,
-        ));
-        echo PHP_EOL;
+        ]));
     }
 
 }
