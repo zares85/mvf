@@ -23,9 +23,10 @@ class Exchange_rate_provider {
     /**
      * Exchange_rate_provider constructor.
      */
-    public function __construct($params) {
+    public function __construct($params)
+    {
         if (empty($params['app_id'])) {
-            show_error('Missing application id');
+            throw new InvalidArgumentException('Missing application id');
         }
         $this->app_id = $params['app_id'];
     }
@@ -35,7 +36,8 @@ class Exchange_rate_provider {
      *
      * @return array
      */
-    public function get_rates() {
+    public function get_rates()
+    {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "{$this->url}?app_id={$this->app_id}");
         curl_setopt($ch, CURLOPT_HEADER, 0);

@@ -8,10 +8,17 @@
  */
 class Exchange_rates extends CI_Model {
 
+    /**
+     * Table name
+     * @var string
+     */
     private $table;
-    public $exchange_rates = array();
 
-    public function __construct() {
+    /**
+     * Exchange_rates constructor.
+     */
+    public function __construct()
+    {
         parent::__construct();
 
         $this->table = strtolower(__CLASS__);
@@ -19,44 +26,55 @@ class Exchange_rates extends CI_Model {
     }
 
     /**
-     * Generates a curl request to get latest rates
-     * Updates database and $exchange_rates array
+     * Updates database rates
      *
-     * @return boolean
-     **/
-    public function update_rates($rates) {
-        $update_successful = FALSE;
-
+     * @param $rates
+     * @throws InvalidArgumentException if currency or rate is not valid.
+     */
+    public function update_rates($rates)
+    {
         foreach ($rates as $currency => $rate) {
-            if (strlen(trim($currency)) == 3 && $rate > 0) {
-                $this->db->where('currency', $currency);
-                $this->db->update($this->table, array('rate' => $rate, 'updated' => date('Y-m-d H:i:s')));
-                $this->exchange_rates[$currency] = $rate;
-                $update_successful = TRUE;
+            if (strlen(trim($currency)) != 3) {
+                throw new InvalidArgumentException("Invalid currency {$currency}");
             }
+            if (!$rate > 0) {
+                throw new InvalidArgumentException("Invalid rate {$rate}");
+            }
+            $this->db->where('currency', $currency);
+            $this->db->update($this->table, array('rate' => $rate, 'updated' => date('Y-m-d H:i:s')));
         }
-
-        return $update_successful;
     }
 
     /**
      * Get a specific exchange rate for $from_currency -> $to_currency
-     * Returns 0 if not found
      *
-     **/
-    public function get_rate($from_currency, $to_currency) {
+     * @param string $from_currency
+     * @param string $to_currency
+     * @return float|int
+     * @throws InvalidArgumentException if any of the give currencies is invalid
+     */
+    public function get_rate($from_currency, $to_currency)
+    {
         $from = $this->db
             ->select('rate')
             ->where('currency', strtoupper($from_currency))
             ->get($this->table)
-            ->row()->rate;
+            ->row();
+
+        if (!$from) {
+            throw new InvalidArgumentException("Invalid currency {$from_currency}");
+        }
 
         $to = $this->db
             ->select('rate')
             ->where('currency', strtoupper($to_currency))
             ->get($this->table)
-            ->row()->rate;
+            ->row();
 
-        return floatval($from) == 0 ? 0 : $to / $from;
+        if (!$to) {
+            throw new InvalidArgumentException("Invalid currency {$to_currency}");
+        }
+
+        return floatval($from->rate) == 0 ? 0 : $to->rate / $from->rate;
     }
 }
