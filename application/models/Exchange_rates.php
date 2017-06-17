@@ -59,7 +59,7 @@ class Exchange_rates extends CI_Model {
             ->select('rate')
             ->where('currency', strtoupper($from_currency))
             ->get($this->table)
-            ->row();
+            ->row(0, Rate_entity::class);
 
         if (!$from) {
             throw new InvalidArgumentException("Invalid currency {$from_currency}");
@@ -69,7 +69,7 @@ class Exchange_rates extends CI_Model {
             ->select('rate')
             ->where('currency', strtoupper($to_currency))
             ->get($this->table)
-            ->row();
+            ->row(0, Rate_entity::class);
 
         if (!$to) {
             throw new InvalidArgumentException("Invalid currency {$to_currency}");
