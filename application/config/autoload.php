@@ -58,7 +58,7 @@ $autoload['packages'] = array();
 |
 |	$autoload['libraries'] = array('user_agent' => 'ua');
 */
-$autoload['libraries'] = array();
+$autoload['libraries'] = array('database');
 
 /*
 | -------------------------------------------------------------------
@@ -132,4 +132,14 @@ $autoload['language'] = array();
 |
 |	$autoload['model'] = array('first_model' => 'first');
 */
-$autoload['model'] = array();
+$autoload['model'] = array('exchange_rate_repository');
+
+/*
+| -------------------------------------------------------------------
+|  Auto-load Entities
+| -------------------------------------------------------------------
+| Prototype:
+|
+|	$autoload['entity'] = array('entity1', 'entity2');
+*/
+$autoload['entity'] = array('Rate_entity');

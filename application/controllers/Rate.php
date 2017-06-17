@@ -32,13 +32,18 @@ class Rate extends CI_Controller {
     {
         try {
             $this->config->load('exchange_rate', true);
-            $this->load->model('exchange_rates');
             $this->load->library('exchange_rate_provider', [
                 'app_id' => $this->config->item('app_id', 'exchange_rate')
             ]);
 
             $rates = $this->exchange_rate_provider->get_rates();
-            $this->exchange_rates->update_rates($rates);
+            foreach ($rates as $currency => $rate) {
+                $rateEntity = new Rate_entity;
+                $rateEntity->currency = $currency;
+                $rateEntity->rate = $rate;
+                $rateEntity->updated = date('Y-m-d H:i:s');
+                $this->exchange_rate_repository->save($rateEntity);
+            }
 
             $this->output->set_output(json_encode([
                 'status' => 'OK'
@@ -71,8 +76,11 @@ class Rate extends CI_Controller {
                 throw new InvalidArgumentException("Invalid amount {$amount}");
             }
 
-            $this->load->model('exchange_rates');
-            $rate = $this->exchange_rates->get_rate($from_currency, $to_currency);
+            $this->load->library('exchange_rate_calculator', [
+                'exchange_rate_repository' => $this->exchange_rate_repository
+            ]);
+
+            $rate = $this->exchange_rate_calculator->calculate($from_currency, $to_currency);
 
             $this->output->set_output(json_encode([
                 'from_currency'    => $from_currency,
