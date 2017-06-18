@@ -11,4 +11,4 @@
 | NOTE: Free plan limited to 1000 calls per month
 |
 */
-$config['app_id'] = 'e619241b63934a50a92e9b0a2440b3d9';
+$config['app_id'] = '';
