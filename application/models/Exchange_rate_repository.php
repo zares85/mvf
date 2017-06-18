@@ -2,12 +2,14 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once APPPATH . 'interfaces' . DIRECTORY_SEPARATOR . 'Exchange_rate_repository_interface.php';
+
 /**
  * Class Exchange_rate_repository
  *
  * @property CI_DB db
  */
-class Exchange_rate_repository extends CI_Model {
+class Exchange_rate_repository extends CI_Model implements Exchange_rate_repository_interface {
 
     /**
      * Table name
