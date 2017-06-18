@@ -31,9 +31,9 @@ class Rate extends CI_Controller {
      */
     public function index()
     {
-        $this->output->set_output(json_encode([
+        $this->output->set_output(json_encode(array(
             'Rate' => 'index'
-        ]));
+        )));
     }
 
     /**
@@ -44,24 +44,24 @@ class Rate extends CI_Controller {
         try {
             $this->config->load('exchange_rate', true);
             $this->load->library('exchange_rate_hydrator');
-            $this->load->library('exchange_rate_provider', [
+            $this->load->library('exchange_rate_provider', array(
                 'app_id' => $this->config->item('app_id', 'exchange_rate')
-            ]);
+            ));
 
             $rates = $this->exchange_rate_provider->get_rates();
-            $rates = $this->exchange_rate_hydrator->hydrate($rates, Exchange_rate_entity::class);
+            $rates = $this->exchange_rate_hydrator->hydrate($rates, 'Exchange_rate_entity');
             foreach ($rates as $rate) {
                 $this->exchange_rate_repository->save($rate);
             }
 
-            $this->output->set_output(json_encode([
+            $this->output->set_output(json_encode(array(
                 'status' => 'OK'
-            ]));
+            )));
         } catch (Exception $e) {
-            $this->output->set_status_header(500)->set_output(json_encode([
+            $this->output->set_status_header(500)->set_output(json_encode(array(
                 'status' => 'FAILED',
                 'error'  => $e->getMessage(),
-            ]));
+            )));
             $this->load->library('email_service');
             $this->email_service->send_error(
                 'Exchange rates update unsuccessful from openexchangerates.org.',
@@ -85,23 +85,23 @@ class Rate extends CI_Controller {
                 throw new InvalidArgumentException("Invalid amount {$amount}");
             }
 
-            $this->load->library('exchange_rate_calculator', [
+            $this->load->library('exchange_rate_calculator', array(
                 'exchange_rate_repository' => $this->exchange_rate_repository
-            ]);
+            ));
 
             $rate = $this->exchange_rate_calculator->calculate($from_currency, $to_currency);
 
-            $this->output->set_output(json_encode([
+            $this->output->set_output(json_encode(array(
                 'from_currency'    => $from_currency,
                 'to_currency'      => $to_currency,
                 'exchange_rate'    => $rate,
                 'original_amount'  => $amount,
                 'converted_amount' => $amount * $rate,
-            ]));
+            )));
         } catch (Exception $e) {
-            $this->output->set_status_header(500)->set_output(json_encode([
+            $this->output->set_status_header(500)->set_output(json_encode(array(
                 'error' => $e->getMessage(),
-            ]));
+            )));
         }
     }
 

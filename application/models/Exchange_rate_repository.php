@@ -44,6 +44,6 @@ class Exchange_rate_repository extends CI_Model implements Exchange_rate_reposit
      * @return Exchange_rate_entity|null
      */
     public function get($currency) {
-        return $this->db->where('currency', $currency)->get($this->table)->row(0, Exchange_rate_entity::class);
+        return $this->db->where('currency', $currency)->get($this->table)->row(0, 'Exchange_rate_entity');
     }
 }

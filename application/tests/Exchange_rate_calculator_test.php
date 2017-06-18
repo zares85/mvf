@@ -15,9 +15,9 @@ class Exchange_rate_calculator_test extends \PHPUnit\Framework\TestCase {
     public function setUp()
     {
         $this->err = $this->getMockBuilder(Exchange_rate_repository_interface::class)->getMock();
-        $this->erc = new Exchange_rate_calculator([
+        $this->erc = new Exchange_rate_calculator(array(
             'exchange_rate_repository' => $this->err,
-        ]);
+        ));
     }
 
     /**
@@ -33,10 +33,10 @@ class Exchange_rate_calculator_test extends \PHPUnit\Framework\TestCase {
         $rate2->currency = 'GBP';
         $rate2->rate = 0.6;
 
-        $this->err->method('get')->will($this->returnValueMap([
-            [$rate1->currency, $rate1],
-            [$rate2->currency, $rate2],
-        ]));
+        $this->err->method('get')->will($this->returnValueMap(array(
+            array($rate1->currency, $rate1),
+            array($rate2->currency, $rate2),
+        )));
 
         $this->assertEquals(
             $this->erc->calculate($rate1->currency, $rate2->currency),
@@ -57,10 +57,10 @@ class Exchange_rate_calculator_test extends \PHPUnit\Framework\TestCase {
         $rate2->currency = 'GBP';
         $rate2->rate = 0.6;
 
-        $this->err->method('get')->will($this->returnValueMap([
-            [$rate1->currency, $rate1],
-            [$rate2->currency, $rate2],
-        ]));
+        $this->err->method('get')->will($this->returnValueMap(array(
+            array($rate1->currency, $rate1),
+            array($rate2->currency, $rate2),
+        )));
 
         $this->assertEquals(
             $this->erc->calculate($rate1->currency, $rate2->currency),
@@ -79,10 +79,10 @@ class Exchange_rate_calculator_test extends \PHPUnit\Framework\TestCase {
         $rate1->currency = 'EUR';
         $rate1->rate = 0.8;
 
-        $this->err->method('get')->will($this->returnValueMap([
-            [$rate1->currency, $rate1],
-            ['ERR', null],
-        ]));
+        $this->err->method('get')->will($this->returnValueMap(array(
+            array($rate1->currency, $rate1),
+            array('ERR', null),
+        )));
 
         $this->erc->calculate($rate1->currency, 'ERR');
     }
@@ -101,10 +101,10 @@ class Exchange_rate_calculator_test extends \PHPUnit\Framework\TestCase {
         $rate2->currency = 'GBP';
         $rate2->rate = 'invalid';
 
-        $this->err->method('get')->will($this->returnValueMap([
-            [$rate1->currency, $rate1],
-            [$rate2->currency, $rate2],
-        ]));
+        $this->err->method('get')->will($this->returnValueMap(array(
+            array($rate1->currency, $rate1),
+            array($rate2->currency, $rate2),
+        )));
 
         $this->erc->calculate($rate1->currency, $rate2->currency);
     }

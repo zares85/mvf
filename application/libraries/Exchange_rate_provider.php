@@ -46,6 +46,8 @@ class Exchange_rate_provider {
         $data = curl_exec($ch);
         curl_close($ch);
 
-        return json_decode($data, true)['rates'];
+        $decoded = json_decode($data, true);
+
+        return $decoded['rates'];
     }
 }

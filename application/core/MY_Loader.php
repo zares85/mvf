@@ -8,8 +8,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class MY_Loader extends CI_Loader {
 
-    protected $path = APPPATH . 'entities' . DIRECTORY_SEPARATOR;
-
     /**
      * Load an entity or array of entities.
      *
@@ -32,7 +30,7 @@ class MY_Loader extends CI_Loader {
 
         if (!class_exists($entity, false))
         {
-            $filename = $this->path . $entity . '.php';
+            $filename = APPPATH . 'entities' . DIRECTORY_SEPARATOR . $entity . '.php';
 
             if (!file_exists($filename))
             {
