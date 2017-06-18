@@ -1,7 +1,18 @@
 <?php
 
+defined('BASEPATH') OR exit('No direct script access allowed');
+
 /**
- * Test controller
+ * Rate controller
+ *
+ * @property CI_Output output
+ * @property CI_Loader load
+ * @property CI_Config config
+ * @property Email_service email_service
+ * @property Exchange_rate_repository exchange_rate_repository
+ * @property Exchange_rate_provider exchange_rate_provider
+ * @property Exchange_rate_calculator exchange_rate_calculator
+ * @property Exchange_rate_hydrator exchange_rate_hydrator
  */
 class Rate extends CI_Controller {
 
@@ -26,23 +37,21 @@ class Rate extends CI_Controller {
     }
 
     /**
-     * Update the mvf.exchange_rates
+     * Update the exchange_rates in the repository.
      */
     public function update_exchange_rates()
     {
         try {
             $this->config->load('exchange_rate', true);
+            $this->load->library('exchange_rate_hydrator');
             $this->load->library('exchange_rate_provider', [
                 'app_id' => $this->config->item('app_id', 'exchange_rate')
             ]);
 
             $rates = $this->exchange_rate_provider->get_rates();
-            foreach ($rates as $currency => $rate) {
-                $rateEntity = new Rate_entity;
-                $rateEntity->currency = $currency;
-                $rateEntity->rate = $rate;
-                $rateEntity->updated = date('Y-m-d H:i:s');
-                $this->exchange_rate_repository->save($rateEntity);
+            $rates = $this->exchange_rate_hydrator->hydrate($rates, Rate_entity::class);
+            foreach ($rates as $rate) {
+                $this->exchange_rate_repository->save($rate);
             }
 
             $this->output->set_output(json_encode([
@@ -97,6 +106,3 @@ class Rate extends CI_Controller {
     }
 
 }
-
-/* End of file cron.php */
-/* Location: ./application/controllers/cron.php */

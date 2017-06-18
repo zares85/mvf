@@ -23,15 +23,20 @@ class Exchange_rate_calculator {
     }
 
     /**
-     * Calculate the rate to conver an amount between two currencies.
+     * Calculate the rate between two currencies.
      *
      * @param string $from_currency
      * @param string $to_currency
      * @return float
      */
     public function calculate($from_currency, $to_currency) {
-        $from = $this->exchange_rate_repository->get($from_currency);
-        $to = $this->exchange_rate_repository->get($to_currency);
+        if (!$from = $this->exchange_rate_repository->get($from_currency)) {
+            throw new InvalidArgumentException("Invalid currency {$from_currency}");
+        }
+
+        if (!$to = $this->exchange_rate_repository->get($to_currency)) {
+            throw new InvalidArgumentException("Invalid currency {$to_currency}");
+        }
 
         return floatval($from->rate) == 0 ? 0 : $to->rate / $from->rate;
     }

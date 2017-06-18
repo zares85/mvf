@@ -4,6 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
  * Class Exchange_rate_repository
+ *
+ * @property CI_DB db
  */
 class Exchange_rate_repository extends CI_Model {
 
@@ -23,9 +25,13 @@ class Exchange_rate_repository extends CI_Model {
         $exists = $this->db->where('currency', $rate->currency)->get($this->table)->num_rows() > 0;
 
         if ($exists) {
-            return $this->db->where('currency', $rate->currency)->update($this->table, $rate);
+            if (!$this->db->where('currency', $rate->currency)->update($this->table, $rate)) {
+                throw new RuntimeException("Error updating currency {$rate->currency} to {$rate->rate}");
+            }
         } else {
-            return $this->db->insert($this->table, $rate);
+            if (!$this->db->insert($this->table, $rate)) {
+                throw  new RuntimeException("Error adding currency {$rate->currency} with rate {$rate->rate}");
+            }
         }
     }
 
