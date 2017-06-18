@@ -19,3 +19,6 @@ Execute `php index.php rate update_exchange_rates`
 Execute `php index.php rate convert_currency <amount> <from currency> <to currency>`
 
 Example: `php index.php rate convert_currency 1 GBP EUR`
+
+#### Run tests (PHP >= 5.5 required)
+Execute `vendor/bin/php`
