@@ -1,18 +1,21 @@
 # MVF Developer Tests
 ## ExchangeRates
 
-Thanks for your interest in a developer role at MVF.
+### Requirements
+- PHP with PDO and SQLite
+- Composer
 
-We have a simple project which we would like you to take a look at in your own time.
+### Installation
+1. Clone the repository [https://github.com/zares85/mvf](https://github.com/zares85/mvf)
+1. Edit application/config/exchange_rate.php file adding your application id from [openexchangerates.org](openexchangerates.org)
+1. Run `composer install` (only for running tests)
 
-You can spend as much or as little time on it as you wish, but if we have asked you to take a look at this, we would usually expect to receive a response in a 3-4 days.
+### Usage
 
-The project is a Codeigniter app written in PHP. It contains a SQLite database for simplicity. You will need PHP, SQLite and PDO to run it. The app contains a Model and Controller which contain functions to manage our exchange rate data. 
+#### Update exchange rates
+Execute `php index.php rate update_exchange_rates`
 
-### Challenge
+#### Convert a currency
+Execute `php index.php rate convert_currency <amount> <from currency> <to currency>`
 
-How would you improve our code? Fork our repo and let us see your ideas! 
-
----
-### MVF
-Do you want to work with the Smartest Tech and the Sharpest Minds? Apply at: http://www.mvfglobal.com/vacancies
+Example: `php index.php rate convert_currency 1 GBP EUR`
