@@ -25,11 +25,11 @@ class Exchange_rate_calculator_test extends \PHPUnit\Framework\TestCase {
      */
     public function testBasic()
     {
-        $rate1 = new Rate_entity;
+        $rate1 = new Exchange_rate_entity;
         $rate1->currency = 'EUR';
         $rate1->rate = 0.8;
 
-        $rate2 = new Rate_entity;
+        $rate2 = new Exchange_rate_entity;
         $rate2->currency = 'GBP';
         $rate2->rate = 0.6;
 
@@ -49,11 +49,11 @@ class Exchange_rate_calculator_test extends \PHPUnit\Framework\TestCase {
      */
     public function testRateZero() {
 
-        $rate1 = new Rate_entity;
+        $rate1 = new Exchange_rate_entity;
         $rate1->currency = 'EUR';
         $rate1->rate = 0;
 
-        $rate2 = new Rate_entity;
+        $rate2 = new Exchange_rate_entity;
         $rate2->currency = 'GBP';
         $rate2->rate = 0.6;
 
@@ -75,7 +75,7 @@ class Exchange_rate_calculator_test extends \PHPUnit\Framework\TestCase {
      */
     public function testInvalidCurrency() {
 
-        $rate1 = new Rate_entity;
+        $rate1 = new Exchange_rate_entity;
         $rate1->currency = 'EUR';
         $rate1->rate = 0.8;
 
@@ -93,11 +93,11 @@ class Exchange_rate_calculator_test extends \PHPUnit\Framework\TestCase {
      * @expectedException RuntimeException
      */
     public function testInvalidRate() {
-        $rate1 = new Rate_entity;
+        $rate1 = new Exchange_rate_entity;
         $rate1->currency = 'EUR';
         $rate1->rate = 0.8;
 
-        $rate2 = new Rate_entity;
+        $rate2 = new Exchange_rate_entity;
         $rate2->currency = 'GBP';
         $rate2->rate = 'invalid';
 

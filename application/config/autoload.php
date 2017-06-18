@@ -142,4 +142,4 @@ $autoload['model'] = array('exchange_rate_repository');
 |
 |	$autoload['entity'] = array('entity1', 'entity2');
 */
-$autoload['entity'] = array('Rate_entity');
+$autoload['entity'] = array('Exchange_rate_entity');

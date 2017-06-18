@@ -20,9 +20,9 @@ class Exchange_rate_repository extends CI_Model implements Exchange_rate_reposit
     /**
      * Insert or update a rate into database.
      *
-     * @param Rate_entity $rate
+     * @param Exchange_rate_entity $rate
      */
-    public function save(Rate_entity $rate)
+    public function save(Exchange_rate_entity $rate)
     {
         $exists = $this->db->where('currency', $rate->currency)->get($this->table)->num_rows() > 0;
 
@@ -41,9 +41,9 @@ class Exchange_rate_repository extends CI_Model implements Exchange_rate_reposit
      * Return a rate give a currency.
      *
      * @param string $currency
-     * @return Rate_entity|null
+     * @return Exchange_rate_entity|null
      */
     public function get($currency) {
-        return $this->db->where('currency', $currency)->get($this->table)->row(0, Rate_entity::class);
+        return $this->db->where('currency', $currency)->get($this->table)->row(0, Exchange_rate_entity::class);
     }
 }

@@ -49,7 +49,7 @@ class Rate extends CI_Controller {
             ]);
 
             $rates = $this->exchange_rate_provider->get_rates();
-            $rates = $this->exchange_rate_hydrator->hydrate($rates, Rate_entity::class);
+            $rates = $this->exchange_rate_hydrator->hydrate($rates, Exchange_rate_entity::class);
             foreach ($rates as $rate) {
                 $this->exchange_rate_repository->save($rate);
             }
